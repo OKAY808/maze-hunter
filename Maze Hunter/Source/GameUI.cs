@@ -6,47 +6,57 @@ namespace Maze_Hunter
 	// The GameUI class manages the creation of different screens and switching between them.
 	// All the game screens are initialized on program start and are kept in a dictionary.
 	// Only one screen is active at a time.
-	class GameUI
+	static class GameUI
 	{
-		public string currentScreen;				// The key to the currently active screen
-		Dictionary<string, Screen> gameScreens;
-		public Character Player;
-
-		public GameUI(MazeRoom maze, Character player)
+		private static string currentScreen;				// The key to the currently active screen
+		public static string CurrentScreen 
 		{
-			Console.SetWindowSize(50, 25);			
-			Console.SetBufferSize(50, 25);
+			get => currentScreen;
+			set 
+			{
+				currentScreen = value;
+				UpdateMenuParams();
+				Draw();
+			}
+		}
+		private static Dictionary<string, Screen> gameScreens;
+		public static Character Player;
+
+		private const int SCREEN_WIDTH = 50, SCREEN_HEIGHT = 25;
+
+		public static void Init(MazeRoom maze, Character player) 
+		{
+			Console.SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+			Console.SetBufferSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 			Console.ForegroundColor = ConsoleColor.Blue;
-			Console.CursorVisible = false;			// No need for a blinking cursor.
+			Console.CursorVisible = false;          // No need for a blinking cursor.
 
 			Player = player;
 			InitScreens(maze, player);
-			SetScreen("StartScreen");
+			CurrentScreen = "StartScreen";
 		}
 
-		public void Draw()							// Draws the currently active screen.
+		public static void Draw()							// Draws the currently active screen.
 		{
 			gameScreens[currentScreen].Draw();
 		}
 
-		public OptionsMenu GetMenu()				// Returns the menu of the current screen.
-		{
+		public static OptionsMenu GetMenu()				// Returns the menu of the current screen.
+		{ 
 			return gameScreens[currentScreen].Menu;
 		}
 
-		public void SetScreen(string newScreen)		// Sets a screen by key.
-		{
-			currentScreen = newScreen;
-			UpdateMenuParams();
-			Draw();
-		}
-
-		public void HandleKey(ConsoleKey key)		// When a key is pressed, this method forwards
+		public static void HandleKey(ConsoleKey key)		// When a key is pressed, this method forwards
 		{											// the command to the current screen.
 			gameScreens[currentScreen].HandleKey(key);
 		}
 
-		private void InitScreens(MazeRoom maze, Character player)     // Creates a dict with all the screens in the game.
+		public static void Update() 
+		{
+			gameScreens[currentScreen].Update();
+		}
+
+		private static void InitScreens(MazeRoom maze, Character player)     // Creates a dict with all the screens in the game.
 		{
 			gameScreens = new Dictionary<string, Screen>();
 
@@ -64,7 +74,7 @@ namespace Maze_Hunter
             gameScreens["MazeScreen"] = CreateMazeScreen(maze , player);
 		}
 
-		private Screen CreateStartScreen()
+		private static Screen CreateStartScreen()
 		{
 			string title =	"==================================================\n" +
 							"=====              Hello Warrior!            =====\n" +
@@ -79,10 +89,10 @@ namespace Maze_Hunter
 
 			OptionsMenu menu = new OptionsMenu(options);
 
-			return new Screen(title, menu);
+			return new StartScreen(title, menu);
 		}
 
-		private Screen CreateNewGameScreen()
+		private static Screen CreateNewGameScreen()
 		{
 			string title =	"==================================================\n" +
 							"=====                New Game!               =====\n" +
@@ -102,10 +112,10 @@ namespace Maze_Hunter
 
 			OptionsMenu menu = new OptionsMenu(options);
 
-			return new Screen(title, menu);
+			return new NewGameScreen(title, menu);
 		}
 
-		private Screen CreateHistoryScreen()
+		private static Screen CreateHistoryScreen()
 		{
 			string title =  "==================================================\n" +
 							"=====                 History!               =====\n" +
@@ -119,10 +129,10 @@ namespace Maze_Hunter
 
 			OptionsMenu menu = new OptionsMenu(options);
 
-			return new Screen(title, menu);
+			return new HistoryScreen(title, menu);
 		}
 
-        public Screen CreateGuildScreen()
+        public static Screen CreateGuildScreen()
         {
             string title = "==================================================\n" +
                            "=====                 Guild!                 =====\n" +
@@ -139,11 +149,11 @@ namespace Maze_Hunter
 
             OptionsMenu menu = new OptionsMenu(options);
 
-            return new Screen(title, menu);
+            return new GuildScreen(title, menu);
         }
 
 
-        private Screen CreateGenderScreen()
+        private static Screen CreateGenderScreen()
         {
             string title = "==================================================\n" +
                             "=====                 Gender!                =====\n" +
@@ -159,10 +169,10 @@ namespace Maze_Hunter
 
             OptionsMenu menu = new OptionsMenu(options);
 
-            return new Screen(title, menu);
+            return new GenderScreen(title, menu);
         }
 
-        private Screen CreateNameScreen()
+        private static Screen CreateNameScreen()
         {
             string title = "==================================================\n" +
                            "=====                 Name!                  =====\n" +
@@ -178,10 +188,10 @@ namespace Maze_Hunter
 
             OptionsMenu menu = new OptionsMenu(options);
 
-            return new Screen(title, menu);
+            return new NameScreen(title, menu);
         }
 
-		private Screen EnterNameScreen()
+		private static Screen EnterNameScreen()
 		{
             string title = "==================================================\n" +
                             "=====           Enter your Name!             =====\n" +
@@ -198,7 +208,7 @@ namespace Maze_Hunter
             return new Screen(title, menu);
         }
 
-        private Screen CreateAttributesScreen(Character player)
+        private static Screen CreateAttributesScreen(Character player)
         {
             string title = "==================================================\n" +
                            "=====                 Attributes!            =====\n" +
@@ -220,7 +230,7 @@ namespace Maze_Hunter
             return new AttributesScreen(title, menu, player);
 		}
         
-        private Screen CreateRandomizeScreen()
+        private static Screen CreateRandomizeScreen()
         {
             string title =  "==================================================\n" +
                             "=====                 Randomize!             =====\n" +
@@ -234,11 +244,11 @@ namespace Maze_Hunter
 
             OptionsMenu menu = new OptionsMenu(options);
 
-            return new Screen(title, menu);
+            return new RandomizeScreen(title, menu);
         }
 
 
-        private Screen CreateMazeScreen(MazeRoom maze,Character player)
+        private static Screen CreateMazeScreen(MazeRoom maze,Character player)
 		{
 			string title =	"==================================================\n" +
 							"=====                  MAZE!                 =====\n" +
@@ -252,7 +262,7 @@ namespace Maze_Hunter
 			return new MazeScreen(title, menu, maze ,player);
 		}
 
-		private void UpdateMenuParams()
+		private static void UpdateMenuParams()
 		{
 			if (currentScreen == "NewGameScreen")
 			{

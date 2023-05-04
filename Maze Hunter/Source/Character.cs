@@ -98,16 +98,6 @@ namespace Maze_Hunter
             }
         }
 
-        public void Male()
-        {
-            Gender = "Male";
-        }
-
-        public void Female()
-        {
-            Gender = "Female";
-        }
-
         public void RandomName()
         {
             Random rand = new Random();
@@ -134,11 +124,11 @@ namespace Maze_Hunter
             int randomGender = rand.Next(1, 3);
             if (randomGender == 1)
             {
-                Male();
+                Gender = "Male";
             }
             else if (randomGender == 2)
             {
-                Female();
+                Gender = "Female";
             }
         }
 

@@ -9,7 +9,7 @@
     {
         public char[,] Grid = new char[8, 8];
 
-        public static int[] position;
+        public int[] position;
         public Character npc;
 
         // Checks whether the Grid is empty (does not contain any NPCs)
@@ -53,54 +53,47 @@
         {
             //npc = EncounteredNPC(Grid);
 
-            if (position[0] >= 0)
-            {
-                int row = position[0] + 1;
-                Grid[row, position[1]] = ' ';
-                //position[0]--;
-                Grid[position[0], position[1]] = 'P';
-            }
+            if (position[0] - 1 < 0) return;
+
+            position[0]--;
+            int row = position[0] + 1;
+            Grid[row, position[1]] = ' ';
         }
 
         public void MoveDown()
         {
-            if (position[0] <= Grid.GetLength(0) - 1)
-            {
-                int row = position[0] - 1;
-                Grid[row, position[1]] = ' ';
-                //position[0]++;
-                Grid[position[0], position[1]] = 'P';
-            }
+            if (position[0] + 1 > Grid.GetLength(0) - 1) return;
+
+            position[0]++;
+            int row = position[0] - 1;
+            Grid[row, position[1]] = ' ';
         }
 
         public void MoveLeft()
         {
-            if (position[1] >= 0)
-            {
-                int column = position[1] + 1;
-                Grid[position[0], column] = ' ';
-                //position[1]--;
-                Grid[position[0], position[1]] = 'P';
-            }
+            if (position[1] - 1 < 0) return;
+
+            position[1]--;
+            int column = position[1] + 1;
+            Grid[position[0], column] = ' ';
         }
 
         public void MoveRight()
         {
-            if (position[1] <= Grid.GetLength(1) - 1)
-            {
-                int column = position[1] - 1;
-                Grid[position[0], column] = ' ';
-                //position[1]++;
-                Grid[position[0], position[1]] = 'P';
-            }
+            if (position[1] + 1 > Grid.GetLength(1) - 1) return;
+
+            position[1]++;
+            int column = position[1] - 1;
+            Grid[position[0], column] = ' ';
         }
 
-        public Character EncounteredNPC(char[,] Grid, int[] position) // Check for encounters with NPC's
+        public Character EncounteredNPC(char[,] grid, int[] position) // Check for encounters with NPC's
         {
             //for (int i = 0; i < Grid.GetLength(0); i++)
             //{
             //for (int j = 0; j < Grid.GetLength(1); j++)
             //{
+
             if (/*Grid[i, j] == 'P' && Grid[i, j] == 'T'*/ Grid[position[0], position[1]] == 'T')
             {
                 Character npc = new Character(); // Example parameters
