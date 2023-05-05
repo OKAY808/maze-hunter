@@ -4,16 +4,18 @@ namespace Maze_Hunter
 {
 	class AttributesScreen : Screen
 	{
-		private Character Player;
+		private string selectedAttribute;
+		private Character player;
 
 		public AttributesScreen(string title, OptionsMenu menu, Character player)
 			: base(title, menu)
 		{
-			Player = player;
+			this.player = player;
 		}
 
 		public override void HandleKey(ConsoleKey key)
 		{
+			int attributeModifier = 0;
 			switch (key)
 			{
 				case ConsoleKey.UpArrow:
@@ -23,25 +25,25 @@ namespace Maze_Hunter
 					Menu.SelectNextOption();
 					break;
 				case ConsoleKey.RightArrow:
-					if (Player.IncreaseAttribute == "Health")
-					{
-						Player.IncreaseHealth();
-					}
-					else if (Player.IncreaseAttribute == "Attack")
-					{
-						Player.IncreaseAttack();
-					}
+					attributeModifier = 1;
 					break;
 				case ConsoleKey.LeftArrow:
-					if (Player.DecreaseAttrtibute == "Health")
-					{
-						Player.DecreaseHealth();
-					}
-					else if (Player.DecreaseAttrtibute == "Attack")
-					{
-						Player.DecreaseAttack();
-					}
+					attributeModifier = -1;
 					break;
+			}
+
+			if (selectedAttribute == "Health")
+			{
+				player.Health += attributeModifier;
+			}
+			else if (selectedAttribute == "Attack") 
+			{
+				player.Attack += attributeModifier;
+			}
+
+			if (attributeModifier != 0)
+			{
+				UpdateAttributes();
 			}
 		}
 
@@ -52,17 +54,25 @@ namespace Maze_Hunter
 			switch (currentOptionText)
 			{
 				case "Health:":
-					Player.IncreaseAttribute = "Health";
-					Player.DecreaseAttrtibute = "Health";
-					break;
 				case "Attack:":
-					Player.IncreaseAttribute = "Attack";
-					Player.DecreaseAttrtibute = "Attack";
+					selectedAttribute = currentOptionText.Substring(0, currentOptionText.Length - 1);
 					break;
 				case "Back":
-					GameUI.CurrentScreen = "NewGameScreen";
+					GameUI.CurrentScreen = ScreenState.NewGame;
 					break;
 			}
+		}
+
+		public override void OnLoad()
+		{
+			UpdateAttributes();
+		}
+
+		private void UpdateAttributes() 
+		{
+			Menu.Options["Points Left:"] = player.MaxStats.ToString();
+			Menu.Options["Health:"] = player.Health.ToString();
+			Menu.Options["Attack:"] = player.Attack.ToString();
 		}
 	}
 }

@@ -6,35 +6,39 @@ namespace Maze_Hunter
 
 	class NameScreen : Screen
 	{
+		private Character player;
+
 		public NameScreen(string title, OptionsMenu menu)
-			: base(title, menu) { }
+			: base(title, menu) 
+		{
+			player = Game.GetInstance().Player;
+		}
 
 		public override void Update()
 		{
 			string currentOptionText = Menu.GetCurrentOptionText();
-			Game game = Game.GetInstance();
-
+			
 			switch (currentOptionText)
 			{
 				case "Back":
-					GameUI.CurrentScreen = "NewGameScreen";
+					GameUI.CurrentScreen = ScreenState.NewGame;
 					break;
 
 				case "Enter Name":
-					GameUI.CurrentScreen = "NameEnter";
+					GameUI.CurrentScreen = ScreenState.EnterName;
 
 					if (GameUI.GetMenu().GetCurrentOptionText() == "Save Name")
 					{
 						Console.CursorVisible = true;
-						game.Player.Name = Console.ReadLine();
+						player.Name = Console.ReadLine();
 						Console.CursorVisible = false;
-						GameUI.CurrentScreen = "NewGameScreen";
+						GameUI.CurrentScreen = ScreenState.NewGame;
 					}
 					break;
 
 				case "Random Name":
-					game.Player.RandomName();
-					GameUI.CurrentScreen = "NewGameScreen";
+					player.Name = PlayerUtils.GetRandomName(player.Gender);
+					GameUI.CurrentScreen = ScreenState.NewGame;
 					break;
 			}
 		}

@@ -6,22 +6,35 @@ namespace Maze_Hunter
 	// The GameUI class manages the creation of different screens and switching between them.
 	// All the game screens are initialized on program start and are kept in a dictionary.
 	// Only one screen is active at a time.
+	enum ScreenState
+	{
+		Start = 0,
+		NewGame,
+		Attributes,
+		Maze,
+		Name,
+		EnterName,
+		History,
+		Randomize,
+		Guild,
+		Gender
+	}
+
 	static class GameUI
 	{
-		private static string currentScreen;				// The key to the currently active screen
-		public static string CurrentScreen 
+		private static ScreenState currentScreen;				// The key to the currently active screen
+		public static ScreenState CurrentScreen 
 		{
 			get => currentScreen;
 			set 
 			{
 				currentScreen = value;
-				UpdateMenuParams();
+				gameScreens[currentScreen].OnLoad();
 				Draw();
 			}
 		}
-		private static Dictionary<string, Screen> gameScreens;
-		public static Character Player;
-
+		private static Dictionary<ScreenState, Screen> gameScreens;
+		
 		private const int SCREEN_WIDTH = 50, SCREEN_HEIGHT = 25;
 
 		public static void Init(MazeRoom maze, Character player) 
@@ -31,9 +44,8 @@ namespace Maze_Hunter
 			Console.ForegroundColor = ConsoleColor.Blue;
 			Console.CursorVisible = false;          // No need for a blinking cursor.
 
-			Player = player;
 			InitScreens(maze, player);
-			CurrentScreen = "StartScreen";
+			CurrentScreen = ScreenState.Start;
 		}
 
 		public static void Draw()							// Draws the currently active screen.
@@ -58,20 +70,20 @@ namespace Maze_Hunter
 
 		private static void InitScreens(MazeRoom maze, Character player)     // Creates a dict with all the screens in the game.
 		{
-			gameScreens = new Dictionary<string, Screen>();
+			gameScreens = new Dictionary<ScreenState, Screen>();
 
 			// To create a new screen, add a method that returns 
 			// a new Screen instance and invoke that method here.
-			gameScreens["StartScreen"] = CreateStartScreen();
-			gameScreens["NewGameScreen"] = CreateNewGameScreen();
-			gameScreens["HistoryScreen"] = CreateHistoryScreen();
-			gameScreens["GuildScreen"] = CreateGuildScreen();
-			gameScreens["GenderScreen"] = CreateGenderScreen();
-			gameScreens["NameScreen"] = CreateNameScreen();
-			gameScreens["NameEnter"] = EnterNameScreen(); // Enter Name Screen ;)
-			gameScreens["AttributesScreen"] = CreateAttributesScreen(player);
-			gameScreens["RandomizeScreen"] = CreateRandomizeScreen();
-            gameScreens["MazeScreen"] = CreateMazeScreen(maze , player);
+			gameScreens[ScreenState.Start] = CreateStartScreen();
+			gameScreens[ScreenState.NewGame] = CreateNewGameScreen();
+			gameScreens[ScreenState.History] = CreateHistoryScreen();
+			gameScreens[ScreenState.Guild] = CreateGuildScreen();
+			gameScreens[ScreenState.Gender] = CreateGenderScreen();
+			gameScreens[ScreenState.Name] = CreateNameScreen();
+			gameScreens[ScreenState.EnterName] = EnterNameScreen(); // Enter Name Screen ;)
+			gameScreens[ScreenState.Attributes] = CreateAttributesScreen(player);
+			gameScreens[ScreenState.Randomize] = CreateRandomizeScreen();
+            gameScreens[ScreenState.Maze] = CreateMazeScreen(maze , player);
 		}
 
 		private static Screen CreateStartScreen()
@@ -221,7 +233,6 @@ namespace Maze_Hunter
 				"Health:",
 				"Attack:",
 				"Randomize",
-				"Done",
 				"Back"
             };
 
@@ -262,19 +273,5 @@ namespace Maze_Hunter
 			return new MazeScreen(title, menu, maze ,player);
 		}
 
-		private static void UpdateMenuParams()
-		{
-			if (currentScreen == "NewGameScreen")
-			{
-				GetMenu().Options["Name"] = Player.Name;
-				GetMenu().Options["Gender"] = Player.Gender;
-				GetMenu().Options["Guild"] = Player.Guild;
-
-				if (Player.Attack != 0 || Player.Health != 0)
-				{
-					GetMenu().Options["Attributes"] = $"H:{Player.Health}, A:{Player.Attack}";
-				}
-			}
-		}
 	}
 }

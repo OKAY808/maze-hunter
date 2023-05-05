@@ -5,34 +5,34 @@ namespace Maze_Hunter
 {
 	class GuildScreen : Screen
 	{
-		public GuildScreen(string title, OptionsMenu menu) : base(title, menu)
+		private Character player;
+
+		public GuildScreen(string title, OptionsMenu menu) 
+			: base(title, menu)
 		{
+			player = Game.GetInstance().Player;
 		}
 
 		public override void Update()
 		{
 			string currentOptionText = Menu.GetCurrentOptionText();
-			Game game = Game.GetInstance();
-
+			
 			switch (currentOptionText)
 			{
 				case "Guild Of Thieves":
-					game.Player.GuildChecker = 1;
-					game.Player.Guilds();
-					GameUI.CurrentScreen = "NewGameScreen";
+					player.Guild = Guilds.Thieves;
 					break;
 				case "Guild Of Assassins":
-					game.Player.GuildChecker = 2;
-					game.Player.Guilds();
-					GameUI.CurrentScreen = "NewGameScreen";
+					player.Guild = Guilds.Assasins;
 					break;
 				case "Random":
-					game.Player.RandomGuild();
-					GameUI.CurrentScreen = "NewGameScreen";
+					player.Guild = PlayerUtils.GetRandomGuild();
 					break;
-				case "Back":
-					GameUI.CurrentScreen = "NewGameScreen";
-					break;
+			}
+
+			if (currentOptionText != null) 
+			{
+				GameUI.CurrentScreen = ScreenState.NewGame;
 			}
 		}
 	}

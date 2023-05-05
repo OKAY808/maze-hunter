@@ -45,6 +45,8 @@ namespace Maze_Hunter
 
         public virtual void Update() { }
 
+        public virtual void OnLoad() { }
+
         // Navigate up and down the menu of the screen.
         public virtual void HandleKey(ConsoleKey key)
         {

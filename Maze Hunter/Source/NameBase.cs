@@ -1,9 +1,35 @@
 ﻿
 namespace Maze_Hunter
 {
-    internal class NameBase
+    static class NameBase
     {
-        public string[] maleNames = {"Antiqua", "Hristo", "Maxi", "Gosho", "Valio", "Vasko", "Egor", "Nasko", "Emo",  "Kris", "Acho", "Niki", "Bobi", "Ary", "Jenkin", "Ivan", "Simo" };
-        public string[] femaleNames = {"Bela", "Buba", "Raya", "Viki"};
+        public static string[] MaleNames = 
+        { 
+            "Antiqua", 
+            "Hristo", 
+            "Maxi", 
+            "Gosho", 
+            "Valio", 
+            "Vasko", 
+            "Egor", 
+            "Nasko", 
+            "Emo",  
+            "Kris", 
+            "Acho", 
+            "Niki", 
+            "Bobi", 
+            "Ary", 
+            "Jenkin", 
+            "Ivan", 
+            "Simo" 
+        };
+
+        public static string[] FemaleNames = 
+        { 
+            "Bela", 
+            "Buba", 
+            "Raya", 
+            "Viki" 
+        };
     }
 }

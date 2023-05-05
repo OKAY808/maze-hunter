@@ -8,20 +8,18 @@ namespace Maze_Hunter
 {
 	class StartScreen : Screen
 	{
-		public StartScreen(string title, OptionsMenu menu) 
-			: base(title, menu)
-		{
-		}
+		public StartScreen(string title, OptionsMenu menu)
+			: base(title, menu) { }
 
 		public override void Update()
 		{
 			switch (Menu.GetCurrentOptionText())
 			{
 				case "New Game":
-					GameUI.CurrentScreen = "NewGameScreen";
+					GameUI.CurrentScreen = ScreenState.NewGame;
 					break;
 				case "History":
-					GameUI.CurrentScreen = "HistoryScreen";
+					GameUI.CurrentScreen = ScreenState.History;
 					break;
 				case "Exit":
 					Game.GetInstance().Exit();
@@ -41,7 +39,7 @@ namespace Maze_Hunter
 			string currentOptionText = Menu.GetCurrentOptionText();
 			if (currentOptionText == "Back")
 			{
-				GameUI.CurrentScreen = "StartScreen";
+				GameUI.CurrentScreen = ScreenState.Start;
 			}
 		}
 	}

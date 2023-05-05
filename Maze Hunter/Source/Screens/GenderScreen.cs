@@ -9,39 +9,36 @@ namespace Maze_Hunter
 {
 	class GenderScreen : Screen
 	{
+		private Character player;
+
 		public GenderScreen(string title, OptionsMenu menu) 
 			: base(title, menu)
 		{
+			player = Game.GetInstance().Player;
 		}
 
 		public override void Update()
 		{
 			string currentOptionText = Menu.GetCurrentOptionText();
 
-			Game game = Game.GetInstance();
-
 			switch (currentOptionText)
 			{
 				case "Male":
-					game.Player.Gender = "Male";
-					GameUI.CurrentScreen = "NewGameScreen";
+					player.Gender = Genders.Male;
 					break;
 
 				case "Female":
-					game.Player.Gender = "Female";
-					GameUI.CurrentScreen = "NewGameScreen";
+					player.Gender = Genders.Female;
 					break;
 
 				case "Random":
-					game.Player.RandomGender();
-					GameUI.CurrentScreen = "NewGameScreen";
-					break;
-
-				case "Back":
-					GameUI.CurrentScreen = "NewGameScreen";
+					player.Gender = PlayerUtils.GetRandomGender();
 					break;
 
 			}
+
+			if (currentOptionText != null)
+				GameUI.CurrentScreen = ScreenState.NewGame;
 		}
 	}
 }

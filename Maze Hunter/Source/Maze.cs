@@ -98,16 +98,14 @@
             {
                 Character npc = new Character(); // Example parameters
                 npc.Name = "Hristo";
-                npc.Guild = "Guild Of Thieves";
-                npc.GuildChecker = 1;
+                npc.Guild = Guilds.Thieves;
                 return npc;
             }
             else if (/*Grid[i, j] == 'P' && Grid[i, j] == 'A'*/ Grid[position[0], position[1]] == 'A')
             {
                 Character npc = new Character();
                 npc.Name = "Viki";
-                npc.Guild = "Guild Of Assassins";
-                npc.GuildChecker = 2;
+                npc.Guild = Guilds.Assasins;
                 return npc;
             }
             else

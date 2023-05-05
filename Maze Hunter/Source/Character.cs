@@ -1,18 +1,78 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Numerics;
 
 namespace Maze_Hunter
 {
+    enum Guilds 
+    {
+        None = 0,
+        Thieves,
+        Assasins
+    }
+
+    enum Genders 
+    {
+        None = 0,
+        Male,
+        Female
+    }
+
     internal class Character
     {
         public string Name;
-        public string Guild;
-        public string Gender;
-        public int Health;
-        public int Attack;
+        public Genders Gender;
+        private int health;
+        public int Health 
+        {
+            get 
+            {
+                return health;
+            }
+            set 
+            {
+                int modifier = value - health;
+                if ((health + modifier < 0) || (health + modifier > 10) ||
+					(MaxStats - modifier > 10 || MaxStats - modifier < 0)) return;
+
+                health = value;
+                MaxStats -= modifier;
+            }
+        }
+
+        private int attack;
+        public int Attack 
+        {
+            get 
+            {
+                return attack;
+            }
+            set 
+            {
+                int modifier = value - attack;
+				if ((attack + modifier < 0 || attack + modifier > 10) || 
+                    (MaxStats - modifier > 10 || MaxStats - modifier < 0)) return;
+
+				attack = value;
+                MaxStats -= modifier;
+            }
+        }
         public int MaxStats;
-        public string IncreaseAttribute;
-        public string DecreaseAttrtibute;
-        public int GuildChecker;
+
+        private Guilds guild;
+        public Guilds Guild 
+        {
+            get 
+            {
+                return guild; 
+            }
+            set 
+            {
+                guild = value;
+                UpdateGuildBonuses();
+            }
+        }
+
         public int HealthBonus = 0;
         public int AttackBonus = 0;
 
@@ -22,126 +82,47 @@ namespace Maze_Hunter
             MaxStats = 10;
             Health = 0;
             Attack = 0;
-            IncreaseAttribute = "";
-            DecreaseAttrtibute = "";
         }
 
-        public void IncreaseHealth()
+        private void UpdateGuildBonuses()
         {
-            if (Health < 10 && MaxStats > 0)
+            switch (Guild) 
             {
-                Health++;
-                MaxStats--;
-            }
-        }
+                case Guilds.Thieves:
+					if (HealthBonus <= 0)
+					{
+						if (AttackBonus > 0)
+						{
+							Attack -= 2;
+						}
+						HealthBonus = 2;
+						AttackBonus = 0;
 
-        public void DecreaseHealth()
-        {
-            if (Health > 0 && MaxStats < 10)
-            {
-                Health--;
-                MaxStats++;
-            }
-        }
+						attack += AttackBonus;
+						health += HealthBonus;
+					}
+					break;
 
-        public void IncreaseAttack()
-        {
-            if (Attack < 10 && MaxStats > 0)
-            {
-                Attack++;
-                MaxStats--;
-            }
-        }
+                case Guilds.Assasins:
+					if (AttackBonus <= 0)
+					{
+						if (HealthBonus > 0)
+						{
+							Health -= 2;
+						}
+						HealthBonus = 0;
+						AttackBonus = 2;
 
-        public void DecreaseAttack()
-        {
-            if (Attack > 0 && MaxStats < 10)
-            {
-                Attack--;
-                MaxStats++;
+						attack += AttackBonus;
+						health += HealthBonus;
+					}
+					break;
             }
-        }
-
-        public void Guilds()
-        {
-            if (GuildChecker == 1)
-            {
-                if (HealthBonus <= 0)
-                {
-                    Guild = "Guild Of Thieves";
-                    if (AttackBonus > 0)
-                    {
-                        Attack -= 2;
-                    }
-                    HealthBonus = 2;
-                    AttackBonus = 0;
-
-                    Attack += AttackBonus;
-                    Health += HealthBonus;
-                }
-            }
-            else if (GuildChecker == 2)
-            {
-                if (AttackBonus <= 0)
-                {
-                    Guild = "Guild Of Assassins";
-                    if (HealthBonus > 0)
-                    {
-                        Health -= 2;
-                    }
-                    HealthBonus = 0;
-                    AttackBonus = 2;
-
-                    Attack += AttackBonus;
-                    Health += HealthBonus;
-                }
-            }
-        }
-
-        public void RandomName()
-        {
-            Random rand = new Random();
-            NameBase namebase = new NameBase();
-            int randomName;
-            if (Gender == "Male")
-            {
-                randomName = rand.Next(namebase.maleNames.Length);
-                Name = namebase.maleNames[randomName];
-            }
-            else if (Gender == "Female")
-            {
-                randomName = rand.Next(namebase.femaleNames.Length);
-                Name = namebase.femaleNames[randomName]; ;
-            }
-            else
-            {
-            }
-        }
-
-        public void RandomGender()
-        {
-            Random rand = new Random();
-            int randomGender = rand.Next(1, 3);
-            if (randomGender == 1)
-            {
-                Gender = "Male";
-            }
-            else if (randomGender == 2)
-            {
-                Gender = "Female";
-            }
-        }
-
-        public void RandomGuild()
-        {
-            Random rand = new Random();
-            GuildChecker = rand.Next(1, 3);
-            Guilds();
         }
 
         public string Encounter(Character npc)
         {
-            if (GuildChecker == npc.GuildChecker)
+            if (Guild == npc.Guild)
             {
                 MeetFriend();
                 return $"Meeting with {npc.Name}";
